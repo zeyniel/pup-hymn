@@ -529,23 +529,3 @@ body::before {
   background: transparent;
   text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
-
-@media (max-width: 768px) {
-  .main-title {
-    font-size: 2rem; /* Shrink title */
-    padding: 0 10px;
-  }
-
-  .lyric-line {
-    font-size: 1.5rem; /* Shrink lyrics for better readability */
-  }
-
-  .bottom-controls {
-    flex-wrap: wrap; /* Allow controls to stack if too wide */
-    padding: 0 10px;
-  }
-
-  .volume-control {
-    display: none; /* Hide volume on tiny screens to save space */
-  }
-}
