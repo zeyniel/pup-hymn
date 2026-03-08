@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUP HYMN</title>
+<!-- Montserrat font for clean, modern typography -->
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Header with PUP logo and university name -->
+<div class="header">
+<img src="file:///C:/Users/X390/Downloads/PUP%20HYMN/pup-logo.png" alt="PUP Logo" class="logo" onerror="this.style.display='none'">
+<div class="wordmark-container">
+<span class="uni-name">POLYTECHNIC UNIVERSITY OF THE PHILIPPINES</span>
+</div>
+</div>
+
+<!-- Main container for lyrics and controls -->
+<div class="content">
+<!-- Song title -->
+<h1 class="main-title">PUP HYMN</h1>
+
+<!-- Dynamic lyrics panel populated by JavaScript -->
+<div class="lyrics" id="lyricsPanel"></div>
+
+<!-- Media control panel -->
+<div class="controls">
+<!-- Seek bar section with time displays -->
+<div class="seek-section">
+<div class="seek-container">
+<span id="currentTime" class="time-display">0:00</span>
+<div class="seek-bar-wrapper">
+<input type="range" id="seekSlider" class="seek-slider" value="0" step="0.1" min="0">
+</div>
+<span id="durationTime" class="time-display">0:00</span>
+</div>
+</div>
+
+<!-- Bottom row with playback controls -->
+<div class="bottom-controls">
+<!-- Playback speed selector with dropdown -->
+<div class="speed-control">
+<button class="speed-btn" id="speedBtn">1.0x</button> 
+<div class="speed-dropdown" id="speedDropdown"> 
+<div class="speed-option" data-speed="0.5">0.5x</div>
+<div class="speed-option" data-speed="0.75">0.75x</div>
+<div class="speed-option active" data-speed="1.0">1.0x</div>
+<div class="speed-option" data-speed="1.25">1.25x</div>
+<div class="speed-option" data-speed="1.5">1.5x</div>
+<div class="speed-option" data-speed="2.0">2.0x</div>
+<div class="speed-option" data-speed="3.0">3.0x</div>
+</div>
+</div>
+
+<!-- Centered play/pause button with SVG icon -->
+<div class="play-button-container">
+<button class="play-btn" id="playPauseBtn">
+<svg class="play-icon" viewBox="0 0 24 24" width="20" height="20"> 
+<polygon points="5,3 19,12 5,21 5,3" fill="currentColor"/>
+</svg>
+</button>
+</div>
+
+<!-- Professional volume control with SVG icon -->
+<div class="volume-control">
+<div class="volume-icon">
+<svg viewBox="0 0 24 24" width="20" height="20">
+<path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/>
+<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor" opacity="0.7"/>
+<path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor" opacity="0.5"/>
+</svg>
+</div>
+<input type="range" id="volumeSlider" min="0" max="1" value="0.7" step="0.05" class="volume-slider">
+<span id="volValue" class="volume-value">70</span>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Updated audio file name -->
+<audio id="pupAudio" src="file:///C:/Users/X390/Downloads/PUP%20HYMN/pup-hymn.mp3" preload="metadata"></audio>
+
+<!-- Main JavaScript file -->
+<script src="main.js"></script>
+</body>
+</html>
