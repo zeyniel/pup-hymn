@@ -167,6 +167,7 @@ body::before {
   background: transparent;
   border: none;
   -webkit-appearance: none;
+  appearance: none;
   outline: none;
   cursor: pointer;
   transition: height 0.2s;
@@ -376,6 +377,7 @@ body::before {
   border: none;
   border-radius: 8px;
   -webkit-appearance: none;
+  appearance: none;
   outline: none;
   cursor: pointer;
   transition: height 0.2s;
