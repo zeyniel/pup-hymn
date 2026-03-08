@@ -1,3 +1,4 @@
+//FEATURE 1: LYRICS DATA STORAGE
 const lyrics = [
   { time: 12, line: "Sintang Paaralan", lineStart: true },
   { time: 15, line: "Tanglaw ka ng bayan" },
@@ -17,72 +18,76 @@ const lyrics = [
   { time: 89, line: "Paaralang dakila" },
   { time: 95, line: "PUP, pinagpala" }
 ];
+//FEATURE 2: DOM ELEMENT REFERENCES
+const audio = document.getElementById('pupAudio'); //si document is built-in js object na kumakatawan sa buong html page. gateway para ma access ung lahat ng elements sa page 
+const playBtn = document.getElementById('playPauseBtn'); //si getElementById ung id finder
+const speedBtn = document.getElementById('speedBtn');
+const speedDropdown = document.getElementById('speedDropdown');
+const speedOptions = document.querySelectorAll('.speed-option'); //si queryselector is class finder, hinahanap lhat ng elements na may css
+const volumeSlider = document.getElementById('volumeSlider');
+const volValue = document.getElementById('volValue');
+const lyricsPanel = document.getElementById('lyricsPanel');
+const seekSlider = document.getElementById('seekSlider');
+const currentTimeDisplay = document.getElementById('currentTime');
+const durationTimeDisplay = document.getElementById('durationTime');
 
-//DOM Element References 
-const audio = document.getElementById('pupAudio'); // finds the hidden audio element in the HTML and assigns it to the variable "audio" for control and event handling
-const playBtn = document.getElementById('playPauseBtn'); // finds the play/pause button element in the HTML and assigns it to the variable "playBtn" for toggling playback and updating the icon
-const speedBtn = document.getElementById('speedBtn'); // finds the speed adjustment button in the HTML and assigns it to the variable "speedBtn" for showing the speed selection dropdown
-const speedDropdown = document.getElementById('speedDropdown'); // finds the speed selection dropdown element in the HTML and assigns it to the variable "speedDropdown" for showing/hiding and updating active speed options
-const speedOptions = document.querySelectorAll('.speed-option'); // selects all elements with the class "speed-option" in the HTML and assigns them to the variable "speedOptions" for binding click events to change playback speed
-const volumeSlider = document.getElementById('volumeSlider'); // finds the volume slider element in the HTML and assigns it to the variable "volumeSlider" for controlling audio volume and updating the displayed volume percentage
-const volValue = document.getElementById('volValue'); // finds the element that displays the current volume percentage in the HTML and assigns it to the variable "volValue" for updating the text content when the volume slider is adjusted
-const lyricsPanel = document.getElementById('lyricsPanel'); // finds the container element for the lyrics in the HTML and assigns it to the variable "lyricsPanel" for dynamically injecting lyric lines and updating their styles based on the current playback time
-const seekSlider = document.getElementById('seekSlider'); // finds the seek bar slider element in the HTML and assigns it to the variable "seekSlider" for controlling audio playback position and visually representing progress
-const currentTimeDisplay = document.getElementById('currentTime'); // finds the element that displays the current playback time in the HTML and assigns it to the variable "currentTimeDisplay" for updating the text content as the audio plays or when the user seeks
-const durationTimeDisplay = document.getElementById('durationTime'); // finds the element that displays the total duration of the audio in the HTML and assigns it to the variable "durationTimeDisplay" for updating the text content once the audio metadata is loaded
-
-//Dynamically create lyric <div> elements and inject them into the page
-function showLyrics() { //declares a function named "showLyrics" that will generate the HTML for each lyric line based on the "lyrics" array and insert it into the "lyricsPanel" element in the DOM
-  let html = ''; // initializes an empty string variable "html" that will be used to build the HTML content for the lyrics
-  lyrics.forEach((item, i) => { // processes each item in the "lyrics" array using the forEach method, where "item" represents the current lyric object and "i" is its index in the array
-    let classes = 'lyric-line'; // all lyric lines share the same base styling defined in css
+//FEATURE 3: LYRICS DISPLAY
+function showLyrics() {
+  let html = '';
+  lyrics.forEach((item, i) => {
+    let classes = 'lyric-line';
     html += `<div class="${classes}" data-index="${i}" data-time="${item.time}">${item.line}</div>`;
-  }); 
-  lyricsPanel.innerHTML = html; // takes the complete HTML string i built and sets it as the innerHTML of the "lyricsPanel" element, effectively rendering all the lyric lines on the page with their respective data attributes for time and index
+  });
+  lyricsPanel.innerHTML = html;
 }
 showLyrics();
 
-//Select all newly created lyric lines and initialize tracking variables
-const lines = document.querySelectorAll('.lyric-line'); //nodelist type variable "lines" that contains references to all the lyric line elements in the DOM, allowing for easy manipulation of their styles and attributes based on the current playback time
-let activeLine = -1 // keeps track of the currently highlighted lyric line index, starting at -1 to indicate no line is active at the beginning
-let isSeeking = false; // creates a flag variable (boolean type) "isSeeking" that will be used to track whether the user is currently dragging the seek slider, which helps prevent conflicts between automatic time updates and user interactions with the slider
+//Get all lyric line elements after they're created
+const lines = document.querySelectorAll('.lyric-line');
 
-//Time formatting 
+// FEATURE 4: STATE MANAGEMENT
+let activeLine = -1;      // Tracks which lyric line is currently highlighted
+let isSeeking = false;    // Tracks if user is dragging the seek bar
+
+// FEATURE 5: UTILITY FUNCTIONS
 function formatTime(seconds) {
-  if (isNaN(seconds)) return '0:00'; // checks if the input "seconds" is not a number (which can happen if the audio metadata hasn't loaded yet) and returns a default time string of "0:00" to prevent displaying "NaN:NaN" or similar invalid formats
-  const mins = Math.floor(seconds / 60); //ito ung nag ccalculate ng minutes
-  const secs = Math.floor(seconds % 60); // ito naman nag calculate ng remaining seconds
-  return `${mins}:${secs < 10 ? '0' : ''}${secs}`; 
+  if (isNaN(seconds)) return '0:00';
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-//Sync the seek bar and time labels with the current audio progress
-function updateSeekBar() { // defines a function named "updateSeekBar" that will be responsible for updating the position of the seek slider, the current time display, and the total duration display based on the current playback time of the audio. This function is called during the "timeupdate" event of the audio element to keep the UI in sync with the audio progress.
-  if (!isSeeking && audio.duration) { // checks if the user is not currently dragging the seek slider (isSeeking is false) and if the audio duration is available (audio.duration is truthy) before proceeding to update the UI. This prevents conflicts between automatic updates and user interactions with the slider, and also ensures that the duration is known before trying to display it.
+function updateSeekBar() {
+  if (!isSeeking && audio.duration) {
     const current = audio.currentTime;
     const duration = audio.duration;
-    seekSlider.value = current; 
+    seekSlider.value = current;
     currentTimeDisplay.textContent = formatTime(current);
     durationTimeDisplay.textContent = formatTime(duration);
     const progress = (current / duration) * 100;
-    //Update CSS variable for custom track coloring
-    seekSlider.style.setProperty('--seek-value', `${progress}%`); //yung white na nag fifill ng progress
+    seekSlider.style.setProperty('--seek-value', `${progress}%`);
   }
 }
 
-//Initialize slider max value once the audio file metadata is ready
+// FEATURE 6: AUDIO INITIALIZATION
 audio.addEventListener('loadedmetadata', () => {
-  seekSlider.max = audio.duration; 
+  seekSlider.max = audio.duration;
   durationTimeDisplay.textContent = formatTime(audio.duration);
   updateSeekBar();
 });
 
-//Primary logic: Update seek bar and highlight current lyric based on time
-audio.addEventListener('timeupdate', () => { 
+audio.addEventListener('loadeddata', () => {
+  durationTimeDisplay.textContent = formatTime(audio.duration);
+  seekSlider.max = audio.duration || 0;
   updateSeekBar();
-  const currentTime = audio.currentTime; 
+});
+
+// FEATURE 7: PLAYBACK & SEEK BAR SYNC
+audio.addEventListener('timeupdate', () => {
+  updateSeekBar();
+  const currentTime = audio.currentTime;
   let current = -1;
   
-  //Find the last lyric line that matches the current playback time
   if (currentTime >= 12) {
     for (let i = lyrics.length - 1; i >= 0; i--) {
       if (currentTime >= lyrics[i].time) {
@@ -92,7 +97,6 @@ audio.addEventListener('timeupdate', () => {
     }
   }
   
-  //Trigger animations and scrolling only when the active line changes
   if (current !== activeLine) {
     lines.forEach(l => l.classList.remove('highlight'));
     if (current >= 0) {
@@ -103,7 +107,7 @@ audio.addEventListener('timeupdate', () => {
   }
 });
 
-//Update time display visually while the user is dragging the slider
+// FEATURE 8: SEEK BAR CONTROLS (DRAGGING)
 seekSlider.addEventListener('input', (e) => {
   isSeeking = true;
   const seekTime = parseFloat(e.target.value);
@@ -112,18 +116,16 @@ seekSlider.addEventListener('input', (e) => {
   seekSlider.style.setProperty('--seek-value', `${progress}%`);
 });
 
-//Update actual audio position and resume playback when slider is released
-seekSlider.addEventListener('change', (e) => { 
+seekSlider.addEventListener('change', (e) => {
   const seekTime = parseFloat(e.target.value);
   audio.currentTime = seekTime;
   isSeeking = false;
-  //Note: play() only triggers if the user has already initiated interaction
   if (audio.paused && audio.currentTime > 0) {
     audio.play().catch(() => {});
   }
 });
 
-//Main play/pause toggle functionality with SVG icon switching
+// FEATURE 9: PLAY/PAUSE BUTTON
 playBtn.addEventListener('click', () => {
   if (audio.paused) {
     audio.play();
@@ -134,36 +136,32 @@ playBtn.addEventListener('click', () => {
   }
 });
 
-//Ensure UI reflects the "Paused" state if triggered externally
 audio.addEventListener('pause', () => {
   playBtn.innerHTML = `<svg class="play-icon" viewBox="0 0 24 24" width="20" height="20"><polygon points="5,3 19,12 5,21 5,3" fill="currentColor"/></svg>`;
 });
 
-//Ensure UI reflects the "Playing" state if triggered externally
 audio.addEventListener('play', () => {
   playBtn.innerHTML = `<svg class="play-icon" viewBox="0 0 24 24" width="20" height="20"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>`;
 });
 
-//Map the volume slider value (0.0 to 1.0) to the audio object
+// FEATURE 10: VOLUME CONTROL
 volumeSlider.addEventListener('input', (e) => {
   audio.volume = parseFloat(e.target.value);
   volValue.textContent = Math.round(audio.volume * 100);
 });
 
-//Show/Hide the custom speed selection dropdown
+// FEATURE 11: PLAYBACK SPEED CONTROL
 speedBtn.addEventListener('click', (e) => {
   e.stopPropagation();
-  speedDropdown.classList.toggle('show');
+  speedDropdown.classList.toggle('show'); 
 });
 
-//Close dropdown menu when clicking anywhere else on the document
 document.addEventListener('click', (e) => {
   if (!speedBtn.contains(e.target) && !speedDropdown.contains(e.target)) {
     speedDropdown.classList.remove('show');
   }
 });
 
-//Change the playback rate and update UI to show active speed
 function setSpeed(speed) {
   audio.playbackRate = parseFloat(speed);
   speedBtn.textContent = parseFloat(speed).toFixed(2).replace('.00', '') + 'x';
@@ -178,14 +176,15 @@ function setSpeed(speed) {
   speedDropdown.classList.remove('show');
 }
 
-//Bind speed adjustment function to each dropdown option
 speedOptions.forEach(btn => {
   btn.addEventListener('click', () => {
     setSpeed(btn.dataset.speed);
   });
 });
 
-//Allow user to click a lyric line to skip the song to that timestamp
+setSpeed('1.0');
+
+// FEATURE 12: CLICKABLE LYRICS
 lines.forEach(line => {
   line.addEventListener('click', () => {
     audio.currentTime = parseFloat(line.dataset.time);
@@ -195,7 +194,7 @@ lines.forEach(line => {
   });
 });
 
-//Reset the UI and position when the song reaches the end
+// FEATURE 13: END OF SONG RESET
 audio.addEventListener('ended', () => {
   playBtn.innerHTML = `<svg class="play-icon" viewBox="0 0 24 24" width="20" height="20"><polygon points="5,3 19,12 5,21 5,3" fill="currentColor"/></svg>`;
   lines.forEach(l => l.classList.remove('highlight'));
@@ -205,20 +204,10 @@ audio.addEventListener('ended', () => {
   seekSlider.style.setProperty('--seek-value', '0%');
 });
 
-//Shortcut: Use spacebar to play or pause without clicking
+// FEATURE 14: KEYBOARD SHORTCUTS
 document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') {
     e.preventDefault();
     playBtn.click();
   }
 });
-
-//Final check to sync UI once audio data is fully loaded
-audio.addEventListener('loadeddata', () => {
-  durationTimeDisplay.textContent = formatTime(audio.duration);
-  seekSlider.max = audio.duration || 0;
-  updateSeekBar();
-});
-
-//Initialize the player with a default 1.0x speed
-setSpeed('1.0');
