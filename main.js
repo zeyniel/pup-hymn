@@ -45,11 +45,11 @@ showLyrics();
 //Get all lyric line elements after they're created
 const lines = document.querySelectorAll('.lyric-line');
 
-// FEATURE 4: STATE MANAGEMENT
+//FEATURE 4: STATE MANAGEMENT
 let activeLine = -1;      // Tracks which lyric line is currently highlighted
 let isSeeking = false;    // Tracks if user is dragging the seek bar
 
-// FEATURE 5: UTILITY FUNCTIONS
+//FEATURE 5: UTILITY FUNCTIONS
 function formatTime(seconds) {
   if (isNaN(seconds)) return '0:00';
   const mins = Math.floor(seconds / 60);
@@ -69,7 +69,7 @@ function updateSeekBar() {
   }
 }
 
-// FEATURE 6: AUDIO INITIALIZATION
+//FEATURE 6: AUDIO INITIALIZATION
 audio.addEventListener('loadedmetadata', () => {
   seekSlider.max = audio.duration;
   durationTimeDisplay.textContent = formatTime(audio.duration);
@@ -82,7 +82,7 @@ audio.addEventListener('loadeddata', () => {
   updateSeekBar();
 });
 
-// FEATURE 7: PLAYBACK & SEEK BAR SYNC
+//FEATURE 7: PLAYBACK & SEEK BAR SYNC
 audio.addEventListener('timeupdate', () => {
   updateSeekBar();
   const currentTime = audio.currentTime;
@@ -107,7 +107,7 @@ audio.addEventListener('timeupdate', () => {
   }
 });
 
-// FEATURE 8: SEEK BAR CONTROLS (DRAGGING)
+//FEATURE 8: SEEK BAR CONTROLS (DRAGGING)
 seekSlider.addEventListener('input', (e) => {
   isSeeking = true;
   const seekTime = parseFloat(e.target.value);
@@ -125,7 +125,7 @@ seekSlider.addEventListener('change', (e) => {
   }
 });
 
-// FEATURE 9: PLAY/PAUSE BUTTON
+//FEATURE 9: PLAY/PAUSE BUTTON
 playBtn.addEventListener('click', () => {
   if (audio.paused) {
     audio.play();
@@ -144,13 +144,13 @@ audio.addEventListener('play', () => {
   playBtn.innerHTML = `<svg class="play-icon" viewBox="0 0 24 24" width="20" height="20"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>`;
 });
 
-// FEATURE 10: VOLUME CONTROL
+//FEATURE 10: VOLUME CONTROL
 volumeSlider.addEventListener('input', (e) => {
   audio.volume = parseFloat(e.target.value);
   volValue.textContent = Math.round(audio.volume * 100);
 });
 
-// FEATURE 11: PLAYBACK SPEED CONTROL
+//FEATURE 11: PLAYBACK SPEED CONTROL
 speedBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   speedDropdown.classList.toggle('show'); 
@@ -184,7 +184,7 @@ speedOptions.forEach(btn => {
 
 setSpeed('1.0');
 
-// FEATURE 12: CLICKABLE LYRICS
+//FEATURE 12: CLICKABLE LYRICS
 lines.forEach(line => {
   line.addEventListener('click', () => {
     audio.currentTime = parseFloat(line.dataset.time);
@@ -194,7 +194,7 @@ lines.forEach(line => {
   });
 });
 
-// FEATURE 13: END OF SONG RESET
+//FEATURE 13: END OF SONG RESET
 audio.addEventListener('ended', () => {
   playBtn.innerHTML = `<svg class="play-icon" viewBox="0 0 24 24" width="20" height="20"><polygon points="5,3 19,12 5,21 5,3" fill="currentColor"/></svg>`;
   lines.forEach(l => l.classList.remove('highlight'));
@@ -204,7 +204,7 @@ audio.addEventListener('ended', () => {
   seekSlider.style.setProperty('--seek-value', '0%');
 });
 
-// FEATURE 14: KEYBOARD SHORTCUTS
+//FEATURE 14: KEYBOARD SHORTCUTS
 document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') {
     e.preventDefault();
