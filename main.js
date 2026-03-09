@@ -19,11 +19,11 @@ const lyrics = [
   { time: 95, line: "PUP, pinagpala" }
 ];
 //FEATURE 2: DOM ELEMENT REFERENCES
-const audio = document.getElementById('pupAudio'); //si document is built-in js object na kumakatawan sa buong html page. gateway para ma access ung lahat ng elements sa page 
-const playBtn = document.getElementById('playPauseBtn'); //si getElementById ung id finder
+const audio = document.getElementById('pupAudio');
+const playBtn = document.getElementById('playPauseBtn'); 
 const speedBtn = document.getElementById('speedBtn');
 const speedDropdown = document.getElementById('speedDropdown');
-const speedOptions = document.querySelectorAll('.speed-option'); //si queryselector is class finder, hinahanap lhat ng elements na may css
+const speedOptions = document.querySelectorAll('.speed-option'); 
 const volumeSlider = document.getElementById('volumeSlider');
 const volValue = document.getElementById('volValue');
 const lyricsPanel = document.getElementById('lyricsPanel');
@@ -82,7 +82,7 @@ audio.addEventListener('loadeddata', () => {
   updateSeekBar();
 });
 
-//FEATURE 7: PLAYBACK & SEEK BAR SYNC
+
 audio.addEventListener('timeupdate', () => {
   updateSeekBar();
   const currentTime = audio.currentTime;
@@ -107,7 +107,7 @@ audio.addEventListener('timeupdate', () => {
   }
 });
 
-//FEATURE 8: SEEK BAR CONTROLS (DRAGGING)
+
 seekSlider.addEventListener('input', (e) => {
   isSeeking = true;
   const seekTime = parseFloat(e.target.value);
@@ -125,7 +125,7 @@ seekSlider.addEventListener('change', (e) => {
   }
 });
 
-//FEATURE 9: PLAY/PAUSE BUTTON
+
 playBtn.addEventListener('click', () => {
   if (audio.paused) {
     audio.play();
